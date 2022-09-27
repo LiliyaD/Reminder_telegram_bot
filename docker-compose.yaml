@@ -1,0 +1,134 @@
+services:
+  pg:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: "--auth-host=md5"
+    container_name: 'postgresql-container-activity'
+    volumes:
+      - data:/var/lib/postgresql/data # том для того, чтобы при перезапуске контейнера все данные сохранялись
+      - ./postgres.conf:/etc/postgresql/postgresql.conf # конфиг БД
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: always
+    networks:
+      - some-net
+
+  bouncer:
+    image: edoburu/pgbouncer:latest
+    environment:
+      # DATABASE_URL: "postgres://${POSTGRESQL_USER}:${POSTGRESQL_PASS}@pg/${POSTGRESQL_DB}"
+      # POOL_MODE: transaction
+      - LISTEN_PORT=5432
+      # - AUTH_TYPE=plain
+      - DB_HOST=pg
+      - DB_USER=${POSTGRESQL_USER}
+      - DB_PASSWORD=${POSTGRESQL_PASS}
+      - DB_NAME=${POSTGRESQL_DB}
+      - POOL_MODE=transaction
+      - DATABASES_POOL_SIZE=10
+      - PGBOUNCER_POOL_MODE=transaction
+      - PGBOUNCER_MAX_CLIENT_CONN=100
+      - PGBOUNCER_DEFAULT_POOL_SIZE=20
+      - PGBOUNCER_IGNORE_STARTUP_PARAMETERS=binary_parameters,extra_float_digits,pool_max_conns
+    container_name: 'pgbouncer-container'
+    ports:
+      - 5432:5432
+    depends_on:
+      - pg
+    networks:
+      - some-net
+
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9092,kafka-3:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+
+  zookeeper:
+    image: zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka-1:
+    image: wurstmeister/kafka
+    ports:
+      - 9095:9094
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://kafka-1:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-1:9092,OUTSIDE://localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+
+      KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_BROKER_ID: 500
+      KAFKA_offsets_topic_replication_factor: 3
+    # volumes:
+    #   - /var/run/docker.sock:/var/run/docker.sock
+    #   - ./kafka_data/500:/kafka
+
+  kafka-2:
+    image: wurstmeister/kafka
+    ports:
+      - 9096:9094
+    environment:
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://kafka-2:9092,OUTSIDE://kafka-2:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-2:9092,OUTSIDE://localhost:9096
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_BROKER_ID: 501
+      KAFKA_offsets_topic_replication_factor: 3
+    # volumes:
+    #   - /var/run/docker.sock:/var/run/docker.sock
+    #   - ./kafka_data/501:/kafka
+
+  kafka-3:
+    image: wurstmeister/kafka
+    ports:
+      - 9097:9094
+    environment:
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://kafka-3:9092,OUTSIDE://kafka-3:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka-3:9092,OUTSIDE://localhost:9097
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_BROKER_ID: 502
+      KAFKA_offsets_topic_replication_factor: 3
+    # volumes:
+    #   - /var/run/docker.sock:/var/run/docker.sock
+    #   - ./kafka_data/502:/kafka
+
+volumes:
+  data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./postgres/data/
+  cache:
+    driver: local
+
+networks:
+  some-net:
+    driver: bridge

@@ -1,0 +1,6 @@
+.vscode
+bin
+postgres
+kafka_data
+archive
+logs

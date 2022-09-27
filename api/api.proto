@@ -1,0 +1,189 @@
+syntax = "proto3";
+
+package api;
+option go_package = "github.com/LiliyaD/Reminder_telegram_bot/pkg/api;api";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Daily activities API";
+    version: "1.0";
+    contact: {
+      name: "dev";
+      url: "https://github.com/LiliyaD";
+      email: "lilz96@mail.ru";
+    };
+  };
+};
+
+service Admin {
+  rpc ActivityCreate(ActivityCreateRequest) returns (ActivityCreateResponse) {
+    option (google.api.http) = {
+      post: "/v1/activity"
+      body: "*"
+    };
+  }
+
+  rpc ActivityList(ActivityListRequest) returns (ActivityListResponse) {
+    option (google.api.http) = {
+      get: "/v1/activities/{chatID}"
+    };
+  }
+
+  rpc ActivityListStream(ActivityListStreamRequest) returns (stream ActivityListStreamResponse) {
+    option (google.api.http) = {
+      get: "/v1/stream_activities/{chatID}"
+    };
+  }
+
+  rpc ActivityToday(ActivityTodayRequest) returns (ActivityTodayResponse) {
+    option (google.api.http) = {
+      get: "/v1/today_activities/{chatID}"
+    };
+  }
+
+  rpc ActivityGet(ActivityGetRequest) returns (ActivityGetResponse) {
+    option (google.api.http) = {
+      get: "/v1/activity/{chatID}/{name}"
+    };
+  }
+
+  rpc ActivityUpdate(ActivityUpdateRequest) returns (ActivityUpdateResponse) {
+    option (google.api.http) = {
+      put: "/v1/activity"
+      body: "*"
+    };
+  }
+
+  rpc ActivityDelete(ActivityDeleteRequest) returns (ActivityDeleteResponse) {
+    option (google.api.http) = {
+      delete: "/v1/activity/{chatID}/{name}"
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityCreate endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityCreateRequest {
+  string name     = 1;
+  string beginDate = 2;
+  string endDate = 3;
+  uint32 timesPerDay = 4;
+  float quantityPerTime = 5;
+  int64 chatID = 6;
+  string userName = 7;
+}
+message ActivityCreateResponse {
+  string name = 1;
+  string beginDate = 2;
+  string endDate = 3;
+  uint32 timesPerDay = 4;      
+  float quantityPerTime = 5;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityList endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityListRequest {
+  int64 chatID = 1;
+  optional uint64 limit = 2;
+  optional uint64 offset = 3;
+  optional string order = 4;
+}
+
+message ActivityListResponse {
+  repeated Activity activities = 1;
+
+  message Activity {
+    string name = 1;
+    string beginDate = 2;
+    string endDate = 3;
+    uint32 timesPerDay = 4;      
+    float quantityPerTime = 5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityListStream endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityListStreamRequest {
+  int64 chatID = 1;
+}
+message ActivityListStreamResponse {
+  string name = 1;
+  string beginDate = 2;
+  string endDate = 3;
+  uint32 timesPerDay = 4;      
+  float quantityPerTime = 5;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityToday endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityTodayRequest {
+  int64 chatID = 1;
+}
+message ActivityTodayResponse {
+  repeated Activity activities = 1;
+
+  message Activity {
+    string name = 1;
+    string beginDate = 2;
+    string endDate = 3;
+    uint32 timesPerDay = 4;      
+    float quantityPerTime = 5;
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityGet endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityGetRequest {
+  int64 chatID = 1;
+  string name = 2;
+}
+message ActivityGetResponse {
+  string name = 1;
+  string beginDate = 2;
+  string endDate = 3;
+  uint32 timesPerDay = 4;      
+  float quantityPerTime = 5; 
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityUpdate endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityUpdateRequest {
+  int64 chatID = 1;
+  string name = 2;
+  string beginDate = 3;
+  string endDate = 4;
+  uint32 timesPerDay = 5;      
+  float quantityPerTime = 6;  
+}
+message ActivityUpdateResponse {
+  string name = 1;
+  string beginDate = 2;
+  string endDate = 3;
+  uint32 timesPerDay = 4;      
+  float quantityPerTime = 5;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// ActivityDelete endpoint messages
+// ---------------------------------------------------------------------------------------------------------------------
+
+message ActivityDeleteRequest {
+  int64 chatID = 1;
+  string name = 2;
+}
+message ActivityDeleteResponse {}

@@ -1,0 +1,522 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Daily activities API",
+    "version": "1.0",
+    "contact": {
+      "name": "dev",
+      "url": "https://github.com/LiliyaD",
+      "email": "lilz96@mail.ru"
+    }
+  },
+  "tags": [
+    {
+      "name": "Admin"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/activities/{chatID}": {
+      "get": {
+        "operationId": "Admin_ActivityList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "chatID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/v1/activity": {
+      "post": {
+        "operationId": "Admin_ActivityCreate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityCreateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiActivityCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      },
+      "put": {
+        "operationId": "Admin_ActivityUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityUpdateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiActivityUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/v1/activity/{chatID}/{name}": {
+      "get": {
+        "operationId": "Admin_ActivityGet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityGetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "chatID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      },
+      "delete": {
+        "operationId": "Admin_ActivityDelete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "chatID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/v1/stream_activities/{chatID}": {
+      "get": {
+        "operationId": "Admin_ActivityListStream",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/apiActivityListStreamResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of apiActivityListStreamResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "chatID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/v1/today_activities/{chatID}": {
+      "get": {
+        "operationId": "Admin_ActivityToday",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiActivityTodayResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "chatID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Admin"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "apiActivityCreateRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        },
+        "chatID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userName": {
+          "type": "string"
+        }
+      }
+    },
+    "apiActivityCreateResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityDeleteResponse": {
+      "type": "object"
+    },
+    "apiActivityGetResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityListResponse": {
+      "type": "object",
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiActivityListResponseActivity"
+          }
+        }
+      }
+    },
+    "apiActivityListResponseActivity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityListStreamResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityTodayResponse": {
+      "type": "object",
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiActivityTodayResponseActivity"
+          }
+        }
+      }
+    },
+    "apiActivityTodayResponseActivity": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "chatID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "apiActivityUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "beginDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "timesPerDay": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantityPerTime": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
