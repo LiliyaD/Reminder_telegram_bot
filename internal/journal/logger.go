@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"path/filepath"
 	"runtime"
 	"sync"
 	"time"
@@ -25,7 +24,10 @@ func New(part string, writeFile bool) {
 		logger = logrus.New()
 
 		if writeFile {
-			filePath := filepath.Join("logs", part, " ", time.Now().Format("2006-01-02 15:04:05"))
+			if err := os.MkdirAll("logs", os.ModePerm); err != nil {
+				log.Fatal(err)
+			}
+			filePath := "logs/" + "Log " + part + time.Now().Format("2006-01-02 15.04.05") + ".log"
 			file, err := os.OpenFile(filePath, os.O_CREATE, os.ModeAppend)
 			if err != nil {
 				log.Fatal(errors.Wrap(err, "Logger"))
