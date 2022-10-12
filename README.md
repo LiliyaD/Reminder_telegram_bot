@@ -45,6 +45,7 @@ Added trace and counters for input, output, success, failed requests and errors,
 _This project was done in stages in terms of learning the language and new technologies, so some moments in the code are strange._
 \
 &nbsp;
+
 ---
 # Телеграм бот для напоминаний
 
