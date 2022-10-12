@@ -23,6 +23,7 @@ https://github.com/edoburu/docker-pgbouncer/blob/master/entrypoint.sh
 _In my solution the second variant is used._
 \
 &nbsp;
+
 ---
 ### Проблема, с которой я столкнулась при использовании PostgreSQL 14.4 c pgbouncer (готовое решение с контейнером edoburu/pgbouncer)
 
